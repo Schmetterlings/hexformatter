@@ -1,3 +1,10 @@
+# Documentation and closed file format
+docs/
+*.spc
+
+# PyCharm
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
