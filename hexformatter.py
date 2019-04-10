@@ -3,6 +3,7 @@
 
 import argparse
 import sys
+import xlsxwriter
 
 
 def format_file(filename):
@@ -39,21 +40,22 @@ def format_frame_info(hex):
     binary = bin(int(hex, 16))[2:].zfill(8)
 
     frame_length = int(binary[:4], 2)
-    info += "Frame length: {}\n".format(frame_length)
+    print (frame_length)
 
     frame_type = int(binary[6:7])
     if frame_type == 0:
-        info += "Frame type: RTR\n"
+        type = "RTR"
     else:
-        info += "Frame type: DATA\n"
+        type = "DATA"
 
     id_type = int(binary[7:8])
     if id_type == 0:
-        info += "ID type: AVR\n"
+        idtype = "AVR"
     else:
-        info += "ID type: STD\n"
+        idtype = "STD"
+    frame_info = (frame_length, type, idtype)
+    return frame_info
 
-    return info
 
 
 def format_frame_id(hex):
@@ -65,7 +67,13 @@ def format_frame_id(hex):
     """
     binary = (bin(int(hex, 16))[2:].zfill(16))[:11]
 
-    return "Frame ID: {}".format(int(binary, 2))
+    return int(binary, 2)
+
+def format_frame_data(hex):
+
+    binary = (bin(int(hex, 16))[2:].zfill(16))[:11]
+
+    return int(binary, 2)
 
 
 if __name__ == "__main__":
@@ -75,10 +83,50 @@ if __name__ == "__main__":
 
     frame_list = format_file(args.file)
 
+    # Create a workbook and add a worksheet.
+    workbook = xlsxwriter.Workbook('Telemetry.xlsx')
+    worksheet = workbook.add_worksheet()
+
+    # 1st row: headers
+    headers = ('Time[ms]','Length','Frame type','ID Type','ID','Data')
+
+    row = 0
+    col = 0
+
+    # Iterate over the data and write it out row by row.
+    for name in (headers):
+        worksheet.write(row, col, name)
+        col += 1
+
+    col = 0
+    row += 1
+
+
     for frame in frame_list:
         frame_arrival_time = int(frame[3] + frame[2] + frame[1] + frame[0], 16)
 
-        print(format_frame_info(frame[4]))
-        print(format_frame_id(frame[6] + frame[5]))
+        worksheet.write(row, col, frame_arrival_time)
+        col += 1
 
-        print("Frame arrival: {} [ms]".format(frame_arrival_time))
+
+        frame_info = format_frame_info(frame[4])
+        worksheet.write(row, col, frame_info[0])
+        col += 1
+        worksheet.write(row, col, frame_info[1])
+        col += 1
+        worksheet.write(row, col, frame_info[2])
+        col += 1
+        worksheet.write(row, col, format_frame_id(frame[6] + frame[5]))
+
+        col += 1
+        if frame_info[0] > 0:
+            id = frame[7]
+            if frame_info[0] > 1:
+                pass
+                for c in frame[8:]:
+                    id += c
+            worksheet.write(row, col, format_frame_data(id))
+
+        col = 0
+        row +=1
+    workbook.close()
