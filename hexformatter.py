@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import sys
 import xlsxwriter
 
 
@@ -29,49 +28,42 @@ def format_file(filename):
     return formatted_list
 
 
-def format_frame_info(hex):
+def format_frame_info(hexdata):
     """
     Converts hex to binary and gets data from bits.
 
-    :param hex: 2 character string
-    :return: string
+    :param hexdata: 2 character string
+    :return: tuple
     """
-    info = ""
-    binary = bin(int(hex, 16))[2:].zfill(8)
+    binary = bin(int(hexdata, 16))[2:].zfill(8)
 
-    frame_length = int(binary[:4], 2)
-    print (frame_length)
+    data_length = ''.join(reversed(binary[:4]))
+    frame_length = int(data_length, 2)
 
     frame_type = int(binary[6:7])
     if frame_type == 0:
-        type = "RTR"
+        frametype = "RTR"
     else:
-        type = "DATA"
+        frametype = "DATA"
 
     id_type = int(binary[7:8])
     if id_type == 0:
         idtype = "AVR"
     else:
         idtype = "STD"
-    frame_info = (frame_length, type, idtype)
-    return frame_info
+
+    info = (frame_length, frametype, idtype)
+    return info
 
 
-
-def format_frame_id(hex):
+def format_frame_id(hexdata):
     """
     Converts hex to binary and gets frame id.
 
-    :param hex: 4 character string
-    :return: string
+    :param hexdata: 4 character string
+    :return: integer
     """
-    binary = (bin(int(hex, 16))[2:].zfill(16))[:11]
-
-    return int(binary, 2)
-
-def format_frame_data(hex):
-
-    binary = (bin(int(hex, 16))[2:].zfill(16))[:11]
+    binary = (bin(int(hexdata, 16))[2:].zfill(16))[:11]
 
     return int(binary, 2)
 
@@ -84,49 +76,25 @@ if __name__ == "__main__":
     frame_list = format_file(args.file)
 
     # Create a workbook and add a worksheet.
-    workbook = xlsxwriter.Workbook('Telemetry.xlsx')
+    workbook = xlsxwriter.Workbook('sd_analysis.xlsx')
     worksheet = workbook.add_worksheet()
 
-    # 1st row: headers
-    headers = ('Time[ms]','Length','Frame type','ID Type','ID','Data')
-
-    row = 0
-    col = 0
+    # Headers tuple
+    headers = ('Time[ms]', 'Length', 'Frame type', 'ID Type', 'ID', 'Data')
 
     # Iterate over the data and write it out row by row.
-    for name in (headers):
-        worksheet.write(row, col, name)
-        col += 1
+    for idx, name in enumerate(headers):
+        worksheet.write(0, idx, name)
 
-    col = 0
-    row += 1
-
-
-    for frame in frame_list:
+    for idx, frame in enumerate(frame_list):
         frame_arrival_time = int(frame[3] + frame[2] + frame[1] + frame[0], 16)
 
-        worksheet.write(row, col, frame_arrival_time)
-        col += 1
-
+        worksheet.write(idx+1, 0, frame_arrival_time)
 
         frame_info = format_frame_info(frame[4])
-        worksheet.write(row, col, frame_info[0])
-        col += 1
-        worksheet.write(row, col, frame_info[1])
-        col += 1
-        worksheet.write(row, col, frame_info[2])
-        col += 1
-        worksheet.write(row, col, format_frame_id(frame[6] + frame[5]))
+        worksheet.write(idx+1, 1, frame_info[0])
+        worksheet.write(idx+1, 2, frame_info[1])
+        worksheet.write(idx+1, 3, frame_info[2])
+        worksheet.write(idx+1, 4, format_frame_id(frame[6] + frame[5]))
 
-        col += 1
-        if frame_info[0] > 0:
-            id = frame[7]
-            if frame_info[0] > 1:
-                pass
-                for c in frame[8:]:
-                    id += c
-            worksheet.write(row, col, format_frame_data(id))
-
-        col = 0
-        row +=1
     workbook.close()
