@@ -1,6 +1,7 @@
 # Documentation and closed file format
 docs/
 *.spc
+*.xlsx
 
 # PyCharm
 .idea/
