@@ -71,12 +71,13 @@ def format_frame_id(hexdata):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Format and display information from raw SD card file.")
     parser.add_argument("file", help="Path to raw SD card file.")
+    parser.add_argument("-o", "--output", default="sd.xlsx", help="Path to output Excel file.")
     args = parser.parse_args()
 
     frame_list = format_file(args.file)
 
     # Create a workbook and add a worksheet.
-    workbook = xlsxwriter.Workbook('sd_analysis.xlsx')
+    workbook = xlsxwriter.Workbook(args.output)
     worksheet = workbook.add_worksheet()
 
     # Headers tuple
