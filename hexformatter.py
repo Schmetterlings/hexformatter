@@ -68,6 +68,27 @@ def format_frame_id(hexdata):
     return int(binary, 2)
 
 
+def find_id_name(frame_id):
+    textsplit = str(frame_id)
+    fpart = textsplit[:2]+"00"
+    spart = textsplit[2:]
+
+    file = open('Can_ID.txt', 'r')
+    text1 = ""
+    text2 = ""
+    for v in file:
+        text1 = v.split(";")
+        if text1[0]==fpart:
+            break
+    for v in file:
+        text2 = v.split(";")
+        if text2[0]==fpart:
+            break
+    id_name = textsplit+" "+text1[1]+" "+text2[1]
+    return id_name
+
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Format and display information from raw SD card file.")
     parser.add_argument("file", help="Path to raw SD card file.")
@@ -96,6 +117,6 @@ if __name__ == "__main__":
         worksheet.write(idx+1, 1, frame_info[0])
         worksheet.write(idx+1, 2, frame_info[1])
         worksheet.write(idx+1, 3, frame_info[2])
-        worksheet.write(idx+1, 4, format_frame_id(frame[6] + frame[5]))
+        worksheet.write(idx+1, 4, find_id_name(format_frame_id(frame[6] + frame[5])))
 
     workbook.close()

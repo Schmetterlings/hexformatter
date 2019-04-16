@@ -1,0 +1,10 @@
+1000;Dane
+1300;Start Modu³u
+1400;B³¹d Modu³u
+01;Kierownica
+02;Sterownik
+03;Moc
+04;Prêdkoœæ
+05;Bluetooth
+06;SD
+15;OPT_SPEED
