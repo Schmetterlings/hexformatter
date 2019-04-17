@@ -1,0 +1,16 @@
+{
+	"module_reason": [
+		{"id": "1000", "name": "Dane"},
+		{"id": "1300", "name": "Start modułu"},
+		{"id": "1400", "name": "Błąd modułu"}
+	],
+	"module": [
+		{"id": "01", "name": "Kierownica"},
+		{"id": "02", "name": "Sterownik"},
+		{"id": "03", "name": "Moc"},
+		{"id": "04", "name": "Prędkość"},
+		{"id": "05", "name": "Bluetooth"},
+		{"id": "06", "name": "SD"},
+		{"id": "15", "name": "OPT_SPEED"}
+	]
+}

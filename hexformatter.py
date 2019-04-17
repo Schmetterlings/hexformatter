@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import json
 import argparse
 import xlsxwriter
 
@@ -69,25 +70,42 @@ def format_frame_id(hexdata):
 
 
 def find_id_name(frame_id):
+    """
+    Finds module name from frame id.
+
+    :param frame_id: integer
+    :return: 2 element list (address type and module)
+    """
     textsplit = str(frame_id)
-    fpart = textsplit[:2]+"00"
+    fpart = textsplit[:2] + "00"
     spart = textsplit[2:]
+    module_reason = ""
+    module = ""
 
-    file = open('Can_ID.txt', 'r')
-    text1 = ""
-    text2 = ""
-    for v in file:
-        text1 = v.split(";")
-        if text1[0]==fpart:
-            break
-    for v in file:
-        text2 = v.split(";")
-        if text2[0]==spart:
-            break
-    file.close()
-    id_name = textsplit+" "+text1[1]+" "+text2[1]
-    return id_name
+    with open("can_id.json") as file:
+        data = json.load(file)
+        for e in data["module_reason"]:
+            if e["id"] == fpart:
+                module_reason = e["name"]
+                break
 
+        for e in data["module"]:
+            if e["id"] == spart:
+                module = e["name"]
+                break
+
+    return [module_reason, module]
+
+def read_data(frame_id, hexdata):
+    """
+    Reads data using specific module instructions.
+
+    :param frame_id: integer
+    :param hexdata: string
+    :return: string
+    """
+    print("Frame id: {}\nHex Data: {}".format(frame_id, hexdata))
+    return "Nothing yet"
 
 
 if __name__ == "__main__":
@@ -103,13 +121,14 @@ if __name__ == "__main__":
     worksheet = workbook.add_worksheet()
 
     # Headers tuple
-    headers = ('Time[ms]', 'Length', 'Frame type', 'ID Type', 'ID', 'Data')
+    headers = ('Czas [ms]', 'Długość', 'Typ ramki', 'Typ ID', 'ID', 'Powód wysłania ramki', 'Moduł', 'Dane')
 
     # Iterate over the data and write it out row by row.
     for idx, name in enumerate(headers):
         worksheet.write(0, idx, name)
 
     for idx, frame in enumerate(frame_list):
+        print("Writing frame [{}] to sheet...".format(idx))
         frame_arrival_time = int(frame[3] + frame[2] + frame[1] + frame[0], 16)
 
         worksheet.write(idx+1, 0, frame_arrival_time)
@@ -118,6 +137,12 @@ if __name__ == "__main__":
         worksheet.write(idx+1, 1, frame_info[0])
         worksheet.write(idx+1, 2, frame_info[1])
         worksheet.write(idx+1, 3, frame_info[2])
-        worksheet.write(idx+1, 4, find_id_name(format_frame_id(frame[6] + frame[5])))
+        worksheet.write(idx+1, 4, format_frame_id(frame[6] + frame[5]))
+        worksheet.write(idx+1, 5, find_id_name(format_frame_id(frame[6] + frame[5]))[0])
+        worksheet.write(idx+1, 6, find_id_name(format_frame_id(frame[6] + frame[5]))[1])
+        if len(frame) == 8:
+            worksheet.write(idx+1, 7, read_data(format_frame_id(frame[6] + frame[5], frame[7])))
+        else:
+            worksheet.write(idx+1, 7, "Puste")
 
     workbook.close()
