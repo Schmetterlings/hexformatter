@@ -82,8 +82,9 @@ def find_id_name(frame_id):
             break
     for v in file:
         text2 = v.split(";")
-        if text2[0]==fpart:
+        if text2[0]==spart:
             break
+    file.close()
     id_name = textsplit+" "+text1[1]+" "+text2[1]
     return id_name
 
