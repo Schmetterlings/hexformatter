@@ -17,9 +17,10 @@ Uses files with proprietary *.spc* extension, strongly hardcoded.
 8: Data
 
 ## TODO:
-* 2 modes for creating files (raw, translated)
-* Excel --> CSV
-* Enter raw converted (binary to decimal) data into column
-* Compare time between frames (do not trust if longer than 20ms)
-* Create headers for all data frames
-* Fill adequate data frames with translated data
+
+[X] User chooses 1 of 2 modes for creating files (raw, translated)  
+[X] Excel --> CSV  
+[X] Enter raw converted (binary to decimal) data into column  
+[ ] Compare time between frames (do not trust if longer than 20ms)  
+[ ] Create headers for all data frames  
+[ ] Fill adequate data frames with translated data  

@@ -2,6 +2,7 @@
 docs/
 *.spc
 *.xlsx
+*.csv
 
 # PyCharm
 .idea/
