@@ -15,3 +15,11 @@ Uses files with proprietary *.spc* extension, strongly hardcoded.
 6: 1st part of frame ID (only bits nr 5, 6, 7 are used, the rest are empty)  
 7: 2nd part of frame ID (all bits used)  
 8: Data
+
+## TODO:
+* 2 modes for creating files (raw, translated)
+* Excel --> CSV
+* Enter raw converted (binary to decimal) data into column
+* Compare time between frames (do not trust if longer than 20ms)
+* Create headers for all data frames
+* Fill adequate data frames with translated data
