@@ -134,15 +134,64 @@ if __name__ == "__main__":
                     for x in range(frame_info[0] + 1, 9):
                         frame_data.append("-")
 
-                    csvwriter.writerow([frame_time, frame_info[0], frame_info[1], frame_info[2], frame_id, 
+                    csvwriter.writerow([frame_time, frame_info[0], frame_info[1], frame_info[2], frame_id,
                                         frame_data[0], frame_data[1], frame_data[2], frame_data[3], frame_data[4], frame_data[5], frame_data[6], frame_data[7]])
 
                 else:
-                    csvwriter.writerow([frame_time, frame_info[0], frame_info[1], frame_info[2], frame_id, 
+                    csvwriter.writerow([frame_time, frame_info[0], frame_info[1], frame_info[2], frame_id,
                                         "-", "-", "-", "-", "-", "-", "-", "-"])
 
         ##########################
         # TRANSLATED OUTPUT FILE #
         ##########################
         else:
-            print("Bartek tutaj wstaw swój kod.")
+            trans_headers = ('Czas [ms]', 'Długość', 'Typ ramki', 'Typ ID', 'ID', 'Hamulec', 'Miernik Mocy[A]','Miernik Mocy[V]', 'Temperatura ogniwa, czujnik 1','Temperatura ogniwa, czujnik 2', 'Prędkość[km/h]', 'Poziom wciśnięcia pedału gazu', 'Start: Kierownica','Start: SD','Start: Miernik mocy', 'Błąd: Kierownica', 'Błąd: SD', 'Błąd: Miernik mocy', 'Błąd: Minuty od startu')
+            csvwriter.writerow(trans_headers)
+
+            for idx, frame in enumerate(frame_list):
+                print("Writing frame [{}] to sheet...".format(idx))
+
+                csv_frame = ['-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-','-']
+
+                csv_frame[0] = int(frame[3] + frame[2] + frame[1] + frame[0], 16)
+                frame_info = format_frame_info(frame[4])
+                csv_frame[1] = frame_info[0]
+                csv_frame[2] = frame_info[1]
+                csv_frame[3] = frame_info[2]
+                csv_frame[4] = format_frame_id(frame[6] + frame[5])
+
+                if frame_info[0] > 0:
+
+                    if csv_frame[4] == 1000:
+                        csv_frame[5] = int(frame[7], 16)
+                    elif csv_frame[4] == 1401:
+                        csv_frame[6] = str(int(frame[7], 16)) + "." + str(int(frame[8], 16))
+                        csv_frame[7] = str(int(frame[9], 16)) + "." + str(int(frame[10], 16))
+                    elif csv_frame[4] == 1410:
+                        csv_frame[8] = str(int(frame[7], 16)) + "." + str(int(frame[8], 16))
+                        csv_frame[9] = str(int(frame[9], 16)) + "." + str(int(frame[10], 16))
+                    elif csv_frame[4] == 1415:
+                        csv_frame[10] = str(int(frame[7], 16)) + "." + str(int(frame[8], 16))
+                    elif csv_frame[4] == 1420:
+                        csv_frame[11] = int(frame[7], 16)
+                    elif csv_frame[4] == 1601:
+                        csv_frame[12] = int(frame[7], 16)
+                    elif csv_frame[4] == 1602:
+                        csv_frame[13] = int(frame[7] + frame[8], 16)
+                    elif csv_frame[4] == 1603:
+                        csv_frame[14] = int(frame[7], 16)
+                    elif csv_frame[4] == 301:
+                        csv_frame[15] = int(frame[10] + frame[9] + frame[8] + frame[7], 16)
+                        csv_frame[18] = int(frame[11])
+                    elif csv_frame[4] == 302:
+                        csv_frame[16] = int(frame[10] + frame[9] + frame[8] + frame[7], 16)
+                        csv_frame[18] = int(frame[11])
+                    elif csv_frame[4] == 303:
+                        csv_frame[17] = int(frame[10] + frame[9] + frame[8] + frame[7], 16)
+                        csv_frame[18] = int(frame[11])
+
+                csvwriter.writerow([csv_frame[0], csv_frame[1], csv_frame[2], csv_frame[3],
+                                   csv_frame[4], csv_frame[5], csv_frame[6], csv_frame[7],
+                                   csv_frame[8], csv_frame[9], csv_frame[10], csv_frame[11],
+                                   csv_frame[12], csv_frame[13], csv_frame[14], csv_frame[15],
+                                   csv_frame[16], csv_frame[17], csv_frame[18]])
