@@ -22,5 +22,5 @@ Uses files with proprietary *.spc* extension, strongly hardcoded.
 [X] Excel --> CSV  
 [X] Enter raw converted (binary to decimal) data into column  
 [ ] Compare time between frames (do not trust if longer than 20ms)  
-[ ] Create headers for all data frames  
-[ ] Fill adequate data frames with translated data  
+[X] Create headers for all data frames  
+[X] Fill adequate data frames with translated data  
