@@ -169,7 +169,7 @@ if __name__ == "__main__":
                 else:
                     frame_time -= csv_frame[0]
 
-                if frame_info[0] > 0 and frame_time == -10:
+                if frame_info[0] > 0 and frame_time >= -10:
 
                         if csv_frame[4] == 1000:
                             csv_frame[5] = int(frame[7], 16)
