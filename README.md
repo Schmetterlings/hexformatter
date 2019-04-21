@@ -21,6 +21,6 @@ Uses files with proprietary *.spc* extension, strongly hardcoded.
 [X] User chooses 1 of 2 modes for creating files (raw, translated)  
 [X] Excel --> CSV  
 [X] Enter raw converted (binary to decimal) data into column  
-[ ] Compare time between frames (do not trust if longer than 20ms)  
+[X] Compare time between frames (do not trust if longer than 20ms)  
 [X] Create headers for all data frames  
 [X] Fill adequate data frames with translated data  
