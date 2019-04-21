@@ -16,11 +16,6 @@ Uses files with proprietary *.spc* extension, strongly hardcoded.
 7: 2nd part of frame ID (all bits used)  
 8: Data
 
-## TODO:
+## Details
 
-[X] User chooses 1 of 2 modes for creating files (raw, translated)  
-[X] Excel --> CSV  
-[X] Enter raw converted (binary to decimal) data into column  
-[X] Compare time between frames (do not trust if longer than 20ms)  
-[X] Create headers for all data frames  
-[X] Fill adequate data frames with translated data  
+* Data is not trusted if the difference between arrivals of frames is bigger than 10ms
